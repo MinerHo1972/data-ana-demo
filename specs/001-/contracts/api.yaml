@@ -1,0 +1,1428 @@
+openapi: 3.0.3
+info:
+  title: 商品破损照片智能比对系统 API
+  description: API for product damage photo comparison and suspicious claim detection
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: api-support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://staging-api.example.com/v1
+    description: Staging server
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Complaints
+    description: Complaint management
+  - name: Photos
+    description: Photo upload and processing
+  - name: Comparisons
+    description: Photo similarity comparisons
+  - name: SuspiciousClaims
+    description: Suspicious claim detection and management
+  - name: Reports
+    description: Analytics and reporting
+  - name: Configuration
+    description: System configuration management
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and return access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Too many login attempts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      description: Refresh access token using refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshTokenResponse'
+        '401':
+          description: Invalid refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /complaints:
+    get:
+      tags:
+        - Complaints
+      summary: List complaints
+      description: Retrieve list of complaints with filtering and pagination
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, processing, resolved, rejected, suspicious]
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum: [low, normal, high, urgent]
+        - name: assigned_agent_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: created_from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: created_to
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: List of complaints
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplaintListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Complaints
+      summary: Create new complaint
+      description: Create a new complaint with initial information
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComplaintRequest'
+      responses:
+        '201':
+          description: Complaint created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplaintResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /complaints/{complaint_id}:
+    get:
+      tags:
+        - Complaints
+      summary: Get complaint details
+      description: Retrieve detailed information about a specific complaint
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: complaint_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Complaint details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplaintResponse'
+        '404':
+          description: Complaint not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Complaints
+      summary: Update complaint
+      description: Update complaint information
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: complaint_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateComplaintRequest'
+      responses:
+        '200':
+          description: Complaint updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplaintResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Complaint not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /complaints/{complaint_id}/photos:
+    post:
+      tags:
+        - Photos
+      summary: Upload photo for complaint
+      description: Upload a damage photo for an existing complaint
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: complaint_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PhotoUploadRequest'
+      responses:
+        '201':
+          description: Photo uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoResponse'
+        '400':
+          description: Invalid file or request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: File too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Photos
+      summary: List photos for complaint
+      description: Retrieve all photos associated with a complaint
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: complaint_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of photos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoListResponse'
+        '404':
+          description: Complaint not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /photos/{photo_id}/analyze:
+    post:
+      tags:
+        - Comparisons
+      summary: Analyze photo for similarities
+      description: Start similarity analysis for uploaded photo
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: photo_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhotoAnalysisRequest'
+      responses:
+        '202':
+          description: Analysis started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisStartedResponse'
+        '404':
+          description: Photo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Analysis already in progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /photos/{photo_id}/comparisons:
+    get:
+      tags:
+        - Comparisons
+      summary: Get photo comparison results
+      description: Retrieve similarity comparison results for a photo
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: photo_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: similarity_threshold
+          in: query
+          schema:
+            type: number
+            default: 90
+            minimum: 0
+            maximum: 100
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+      responses:
+        '200':
+          description: Comparison results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComparisonResultsResponse'
+        '404':
+          description: Photo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /comparisons/{comparison_id}:
+    get:
+      tags:
+        - Comparisons
+      summary: Get comparison details
+      description: Retrieve detailed information about a specific comparison
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: comparison_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Comparison details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComparisonResponse'
+        '404':
+          description: Comparison not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /suspicious-claims:
+    get:
+      tags:
+        - SuspiciousClaims
+      summary: List suspicious claims
+      description: Retrieve list of suspicious claims with filtering
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: risk_level
+          in: query
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [under_review, confirmed_suspicious, cleared, escalated]
+        - name: created_from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: created_to
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: List of suspicious claims
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuspiciousClaimListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /suspicious-claims/{claim_id}:
+    get:
+      tags:
+        - SuspiciousClaims
+      summary: Get suspicious claim details
+      description: Retrieve detailed information about a suspicious claim
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: claim_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Suspicious claim details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuspiciousClaimResponse'
+        '404':
+          description: Suspicious claim not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - SuspiciousClaims
+      summary: Update suspicious claim review
+      description: Update review status and notes for suspicious claim
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: claim_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSuspiciousClaimRequest'
+      responses:
+        '200':
+          description: Suspicious claim updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuspiciousClaimResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Suspicious claim not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /reports/daily-summary:
+    get:
+      tags:
+        - Reports
+      summary: Get daily summary report
+      description: Retrieve daily summary of complaints and analyses
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Daily summary report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailySummaryResponse'
+        '400':
+          description: Invalid date format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /reports/suspicious-patterns:
+    get:
+      tags:
+        - Reports
+      summary: Get suspicious patterns report
+      description: Retrieve analysis of suspicious claim patterns
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: from_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Suspicious patterns report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuspiciousPatternsResponse'
+        '400':
+          description: Invalid date range
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /configuration:
+    get:
+      tags:
+        - Configuration
+      summary: Get system configuration
+      description: Retrieve current system configuration
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: System configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Configuration
+      summary: Update system configuration
+      description: Update system configuration values
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateConfigurationRequest'
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationResponse'
+        '400':
+          description: Invalid configuration data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+        details:
+          type: object
+          description: Additional error details
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+        password:
+          type: string
+          minLength: 8
+          description: User password
+
+    LoginResponse:
+      type: object
+      required:
+        - access_token
+        - refresh_token
+        - user
+      properties:
+        access_token:
+          type: string
+          description: JWT access token
+        refresh_token:
+          type: string
+          description: JWT refresh token
+        expires_in:
+          type: integer
+          description: Token expiration time in seconds
+        user:
+          $ref: '#/components/schemas/User'
+
+    RefreshTokenRequest:
+      type: object
+      required:
+        - refresh_token
+      properties:
+        refresh_token:
+          type: string
+          description: Refresh token
+
+    RefreshTokenResponse:
+      type: object
+      required:
+        - access_token
+        - expires_in
+      properties:
+        access_token:
+          type: string
+          description: New JWT access token
+        expires_in:
+          type: integer
+          description: Token expiration time in seconds
+
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - name
+        - role
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User ID
+        email:
+          type: string
+          format: email
+          description: User email
+        name:
+          type: string
+          description: User full name
+        role:
+          type: string
+          enum: [customer_service_agent, admin, system]
+          description: User role
+        phone:
+          type: string
+          description: User phone number
+        department:
+          type: string
+          description: User department
+        is_active:
+          type: boolean
+          description: Account active status
+        last_login:
+          type: string
+          format: date-time
+          description: Last login timestamp
+
+    CustomerInfo:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          description: Customer name
+        email:
+          type: string
+          format: email
+          description: Customer email
+        phone:
+          type: string
+          description: Customer phone
+        order_id:
+          type: string
+          description: Order ID
+        order_date:
+          type: string
+          format: date
+          description: Order date
+        shipping_address:
+          $ref: '#/components/schemas/Address'
+
+    Address:
+      type: object
+      required:
+        - street
+        - city
+        - state
+        - zip
+        - country
+      properties:
+        street:
+          type: string
+          description: Street address
+        city:
+          type: string
+          description: City
+        state:
+          type: string
+          description: State/Province
+        zip:
+          type: string
+          description: Postal code
+        country:
+          type: string
+          description: Country
+
+    ProductInfo:
+      type: object
+      required:
+        - sku
+        - name
+      properties:
+        sku:
+          type: string
+          description: Product SKU
+        name:
+          type: string
+          description: Product name
+        category:
+          type: string
+          description: Product category
+        price:
+          type: number
+          format: decimal
+          description: Product price
+        purchase_date:
+          type: string
+          format: date
+          description: Purchase date
+        serial_number:
+          type: string
+          description: Product serial number
+
+    CreateComplaintRequest:
+      type: object
+      required:
+        - customer_info
+        - product_info
+      properties:
+        customer_info:
+          $ref: '#/components/schemas/CustomerInfo'
+        product_info:
+          $ref: '#/components/schemas/ProductInfo'
+        damage_description:
+          type: string
+          description: Description of damage
+        priority:
+          type: string
+          enum: [low, normal, high, urgent]
+          default: normal
+          description: Complaint priority
+
+    UpdateComplaintRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, processing, resolved, rejected, suspicious]
+          description: Complaint status
+        priority:
+          type: string
+          enum: [low, normal, high, urgent]
+          description: Complaint priority
+        assigned_agent_id:
+          type: string
+          format: uuid
+          description: Assigned agent ID
+        resolution_notes:
+          type: string
+          description: Resolution notes
+
+    ComplaintResponse:
+      type: object
+      required:
+        - id
+        - complaint_number
+        - customer_info
+        - product_info
+        - status
+        - priority
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Complaint ID
+        complaint_number:
+          type: string
+          description: Complaint number
+        user_id:
+          type: string
+          format: uuid
+          description: User who created complaint
+        customer_info:
+          $ref: '#/components/schemas/CustomerInfo'
+        product_info:
+          $ref: '#/components/schemas/ProductInfo'
+        damage_description:
+          type: string
+          description: Damage description
+        status:
+          type: string
+          enum: [pending, processing, resolved, rejected, suspicious]
+          description: Complaint status
+        priority:
+          type: string
+          enum: [low, normal, high, urgent]
+          description: Complaint priority
+        assigned_agent_id:
+          type: string
+          format: uuid
+          description: Assigned agent ID
+        resolution_notes:
+          type: string
+          description: Resolution notes
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    ComplaintListResponse:
+      type: object
+      required:
+        - complaints
+        - pagination
+      properties:
+        complaints:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComplaintResponse'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    Pagination:
+      type: object
+      required:
+        - page
+        - limit
+        - total
+        - total_pages
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        limit:
+          type: integer
+          description: Items per page
+        total:
+          type: integer
+          description: Total number of items
+        total_pages:
+          type: integer
+          description: Total number of pages
+        has_next:
+          type: boolean
+          description: Has next page
+        has_prev:
+          type: boolean
+          description: Has previous page
+
+    PhotoUploadRequest:
+      type: object
+      required:
+        - photo
+      properties:
+        photo:
+          type: string
+          format: binary
+          description: Photo file (JPEG, PNG, WebP, max 50MB)
+        description:
+          type: string
+          description: Photo description
+
+    PhotoResponse:
+      type: object
+      required:
+        - id
+        - s3_key
+        - original_filename
+        - file_size
+        - mime_type
+        - processing_status
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Photo ID
+        complaint_id:
+          type: string
+          format: uuid
+          description: Associated complaint ID
+        s3_key:
+          type: string
+          description: S3 object key
+        s3_bucket:
+          type: string
+          description: S3 bucket name
+        original_filename:
+          type: string
+          description: Original filename
+        file_size:
+          type: integer
+          description: File size in bytes
+        mime_type:
+          type: string
+          description: MIME type
+        width:
+          type: integer
+          description: Image width
+        height:
+          type: integer
+          description: Image height
+        metadata:
+          type: object
+          description: Photo metadata
+        processing_status:
+          type: string
+          enum: [uploaded, processing, processed, failed]
+          description: Processing status
+        created_at:
+          type: string
+          format: date-time
+          description: Upload timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    PhotoListResponse:
+      type: object
+      required:
+        - photos
+      properties:
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoResponse'
+
+    PhotoAnalysisRequest:
+      type: object
+      properties:
+        similarity_threshold:
+          type: number
+          default: 90
+          minimum: 0
+          maximum: 100
+          description: Similarity threshold for matching
+        algorithm:
+          type: string
+          default: aws-rekognition
+          description: Algorithm to use for analysis
+        priority:
+          type: string
+          enum: [low, normal, high]
+          default: normal
+          description: Analysis priority
+
+    AnalysisStartedResponse:
+      type: object
+      required:
+        - analysis_id
+        - status
+      properties:
+        analysis_id:
+          type: string
+          format: uuid
+          description: Analysis job ID
+        status:
+          type: string
+          enum: [queued, processing]
+          description: Analysis status
+        estimated_completion:
+          type: string
+          format: date-time
+          description: Estimated completion time
+
+    ComparisonResponse:
+      type: object
+      required:
+        - id
+        - uploaded_photo_id
+        - historical_photo_id
+        - similarity_score
+        - comparison_threshold
+        - status
+        - comparison_time
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Comparison ID
+        uploaded_photo_id:
+          type: string
+          format: uuid
+          description: Uploaded photo ID
+        historical_photo_id:
+          type: string
+          format: uuid
+          description: Historical photo ID
+        similarity_score:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 100
+          description: Similarity score (0-100%)
+        comparison_threshold:
+          type: number
+          format: decimal
+          description: Threshold used for comparison
+        algorithm:
+          type: string
+          description: Algorithm used
+        comparison_time:
+          type: string
+          format: date-time
+          description: Comparison timestamp
+        processing_duration_ms:
+          type: integer
+          description: Processing duration in milliseconds
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+          description: Comparison status
+        error_message:
+          type: string
+          description: Error message if failed
+        metadata:
+          type: object
+          description: Comparison metadata
+
+    ComparisonResultsResponse:
+      type: object
+      required:
+        - uploaded_photo_id
+        - comparisons
+      properties:
+        uploaded_photo_id:
+          type: string
+          format: uuid
+          description: Uploaded photo ID
+        similarity_threshold:
+          type: number
+          description: Threshold used
+        total_comparisons:
+          type: integer
+          description: Total comparisons performed
+        comparisons:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComparisonResponse'
+
+    SuspiciousClaimResponse:
+      type: object
+      required:
+        - id
+        - complaint_id
+        - risk_score
+        - risk_level
+        - evidence
+        - status
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Suspicious claim ID
+        complaint_id:
+          type: string
+          format: uuid
+          description: Associated complaint ID
+        risk_score:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 100
+          description: Risk score (0-100)
+        risk_level:
+          type: string
+          enum: [low, medium, high, critical]
+          description: Risk level
+        evidence:
+          type: object
+          description: Evidence supporting suspicion
+        pattern_analysis:
+          type: object
+          description: Pattern analysis results
+        status:
+          type: string
+          enum: [under_review, confirmed_suspicious, cleared, escalated]
+          description: Review status
+        reviewed_by:
+          type: string
+          format: uuid
+          description: Reviewer user ID
+        review_notes:
+          type: string
+          description: Review notes
+        auto_flagged:
+          type: boolean
+          description: Auto-flagged by system
+        manual_review_required:
+          type: boolean
+          description: Manual review required
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    SuspiciousClaimListResponse:
+      type: object
+      required:
+        - suspicious_claims
+        - pagination
+      properties:
+        suspicious_claims:
+          type: array
+          items:
+            $ref: '#/components/schemas/SuspiciousClaimResponse'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    UpdateSuspiciousClaimRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [under_review, confirmed_suspicious, cleared, escalated]
+          description: Review status
+        review_notes:
+          type: string
+          description: Review notes
+
+    DailySummaryResponse:
+      type: object
+      required:
+        - date
+        - summary
+      properties:
+        date:
+          type: string
+          format: date
+          description: Summary date
+        summary:
+          type: object
+          required:
+            - total_complaints
+            - processed_photos
+            - completed_comparisons
+            - suspicious_claims
+          properties:
+            total_complaints:
+              type: integer
+              description: Total complaints created
+            processed_photos:
+              type: integer
+              description: Photos processed
+            completed_comparisons:
+              type: integer
+              description: Comparisons completed
+            suspicious_claims:
+              type: integer
+              description: Suspicious claims identified
+            processing_times:
+              type: object
+              description: Processing time statistics
+            accuracy_metrics:
+              type: object
+              description: Accuracy metrics
+
+    SuspiciousPatternsResponse:
+      type: object
+      required:
+        - period
+        - patterns
+      properties:
+        period:
+          type: object
+          required:
+            - from_date
+            - to_date
+          properties:
+            from_date:
+              type: string
+              format: date
+              description: Analysis start date
+            to_date:
+              type: string
+              format: date
+              description: Analysis end date
+        patterns:
+          type: object
+          required:
+            - photo_repetition
+            - customer_behavior
+            - temporal_patterns
+          properties:
+            photo_repetition:
+              type: object
+              description: Photo repetition patterns
+            customer_behavior:
+              type: object
+              description: Customer behavior patterns
+            temporal_patterns:
+              type: object
+              description: Temporal patterns
+
+    ConfigurationResponse:
+      type: object
+      required:
+        - configurations
+      properties:
+        configurations:
+          type: array
+          items:
+            type: object
+            required:
+              - key
+              - value
+              - category
+            properties:
+              key:
+                type: string
+                description: Configuration key
+              value:
+                description: Configuration value
+              description:
+                type: string
+                description: Configuration description
+              category:
+                type: string
+                description: Configuration category
+              is_active:
+                type: boolean
+                description: Configuration active status
+
+    UpdateConfigurationRequest:
+      type: object
+      required:
+        - configurations
+      properties:
+        configurations:
+          type: array
+          items:
+            type: object
+            required:
+              - key
+              - value
+            properties:
+              key:
+                type: string
+                description: Configuration key
+              value:
+                description: New configuration value

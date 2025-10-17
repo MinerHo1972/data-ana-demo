@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\".specify/scripts/bash/create-new-feature.sh\" --json \"\")",
+      "Bash(\".specify/scripts/bash/create-new-feature.sh\" --json \"在电商客服场景中，对客户上传的商品破损照片在历史客服照片库中进行搜索比对，防止恶意索赔\")",
+      "Read(//c/Users/miner/glm-demo/gitlocal/specs/001-/**)",
+      "Bash(\".specify/scripts/bash/setup-plan.sh\" --json \"\")",
+      "WebSearch",
+      "WebFetch(domain:opencv.org)",
+      "WebFetch(domain:aws.amazon.com)",
+      "WebFetch(domain:azure.microsoft.com)",
+      "WebFetch(domain:docs.pinecone.io)",
+      "WebFetch(domain:weaviate.io)",
+      "WebFetch(domain:milvus.io)",
+      "WebFetch(domain:qdrant.tech)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:towardsdatascience.com)",
+      "WebFetch(domain:learnopencv.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:en.wikipedia.org)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
