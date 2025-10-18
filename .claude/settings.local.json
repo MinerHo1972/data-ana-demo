@@ -1,6 +1,8 @@
 {
   "permissions": {
     "allow": [
+      "Bash(python:*)",
+      "Bash(pip install:*)",
       "Bash(git init:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
@@ -22,7 +24,8 @@
       "Bash(git push:*)",
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" repo sync:*)",
       "Bash(git fetch:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []
