@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生产排产计划系统 - 甘特图</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        .phone-frame {
+            width: 375px;
+            height: 640px;
+            border: 12px solid #000;
+            border-radius: 36px;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            position: relative;
+            z-index: 10;
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+        }
+        .gantt-bar {
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 11px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .gantt-grid {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+            gap: 1px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .gantt-header {
+            background: #f9fafb;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+        .gantt-row {
+            display: contents;
+        }
+        .gantt-label {
+            background: #f9fafb;
+            padding: 4px 8px;
+            font-size: 11px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid #e5e7eb;
+        }
+        .gantt-cell {
+            background: white;
+            position: relative;
+            min-height: 32px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="status-bar">
+            <span>9:41</span>
+            <div class="flex gap-1">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
+        </div>
+
+        <div class="h-full bg-gray-50 relative">
+            <!-- 顶部导航 -->
+            <div class="bg-white shadow-sm px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center">
+                    <button class="mr-3">
+                        <i class="fas fa-arrow-left text-gray-600 text-xl"></i>
+                    </button>
+                    <h1 class="text-lg font-semibold text-gray-800">甘特图</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button>
+                        <i class="fas fa-filter text-gray-600 text-lg"></i>
+                    </button>
+                    <button>
+                        <i class="fas fa-download text-gray-600 text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 时间选择器 -->
+            <div class="bg-white px-4 py-3 border-b border-gray-200">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <button class="p-1">
+                            <i class="fas fa-chevron-left text-gray-400"></i>
+                        </button>
+                        <span class="text-sm font-medium text-gray-800">2024年3月 第3周</span>
+                        <button class="p-1">
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 bg-purple-100 text-purple-600 rounded-lg text-xs font-medium">日</button>
+                        <button class="px-3 py-1 text-gray-500 rounded-lg text-xs">周</button>
+                        <button class="px-3 py-1 text-gray-500 rounded-lg text-xs">月</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主要内容区域 -->
+            <div class="px-4 py-4 overflow-y-auto" style="height: calc(100% - 44px - 60px - 60px - 60px);">
+                <!-- 甘特图 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-semibold text-gray-800">产线排产甘特图</h3>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-green-500 rounded mr-1"></div>
+                                <span class="text-xs text-gray-600">正常</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-yellow-500 rounded mr-1"></div>
+                                <span class="text-xs text-gray-600">进行中</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-red-500 rounded mr-1"></div>
+                                <span class="text-xs text-gray-600">异常</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 简化的甘特图 -->
+                    <div class="gantt-grid text-xs">
+                        <div class="gantt-header">产线/订单</div>
+                        <div class="gantt-header">3/15</div>
+                        <div class="gantt-header">3/16</div>
+                        <div class="gantt-header">3/17</div>
+                        <div class="gantt-header">3/18</div>
+                        <div class="gantt-header">3/19</div>
+                        <div class="gantt-header">3/20</div>
+                        <div class="gantt-header">3/21</div>
+
+                        <!-- 前道产线1 -->
+                        <div class="gantt-row">
+                            <div class="gantt-label">前道产线1</div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-green-500" style="width: 90%; margin: 4px;">
+                                    A001
+                                </div>
+                            </div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-green-500" style="width: 90%; margin: 4px;">
+                                    A001
+                                </div>
+                            </div>
+                            <div class="gantt-cell"></div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-yellow-500" style="width: 90%; margin: 4px;">
+                                    B002
+                                </div>
+                            </div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-yellow-500" style="width: 90%; margin: 4px;">
+                                    B002
+                                </div>
+                            </div>
+                            <div class="gantt-cell"></div>
+                            <div class="gantt-cell"></div>
+                        </div>
+
+                        <!-- 前道产线2 -->
+                        <div class="gantt-row">
+                            <div class="gantt-label">前道产线2</div>
+                            <div class="gantt-cell"></div>
+                            <div class="gantt-cell"></div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-green-500" style="width: 90%; margin: 4px;">
+                                    C003
+                                </div>
+                            </div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-green-500" style="width: 90%; margin: 4px;">
+                                    C003
+                                </div>
+                            </div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-red-500" style="width: 90%; margin: 4px;">
+                                    D004!
+                                </div>
+                            </div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-red-500" style="width: 90%; margin: 4px;">
+                                    D004!
+                                </div>
+                            </div>
+                            <div class="gantt-cell"></div>
+                        </div>
+
+                        <!-- 后道产线1 -->
+                        <div class="gantt-row">
+                            <div class="gantt-label">后道产线1</div>
+                            <div class="gantt-cell"></div>
+                            <div class="gantt-cell"></div>
+                            <div class="gantt-cell"></div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-green-500" style="width: 45%; margin: 4px;">
+                                    A001
+                                </div>
+                            </div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-green-500" style="width: 90%; margin: 4px;">
+                                    A001
+                                </div>
+                            </div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-green-500" style="width: 90%; margin: 4px;">
+                                    B002
+                                </div>
+                            </div>
+                            <div class="gantt-cell">
+                                <div class="gantt-bar bg-green-500" style="width: 45%; margin: 4px;">
+                                    B002
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 异常提醒 -->
+                <div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-circle text-red-600 mt-1 mr-3"></i>
+                        <div class="flex-1">
+                            <h4 class="text-sm font-semibold text-red-800 mb-1">排产异常提醒</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between bg-white rounded-lg p-2">
+                                    <div class="flex items-center">
+                                        <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded mr-2">D004</span>
+                                        <span class="text-sm text-gray-800">原物料不足</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500">前道产线2</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-white rounded-lg p-2">
+                                    <div class="flex items-center">
+                                        <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-1 rounded mr-2">E005</span>
+                                        <span class="text-sm text-gray-800">产线冲突</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500">后道产线1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 产线利用率 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm mb-4">
+                    <h3 class="text-base font-semibold text-gray-800 mb-3">产线利用率</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex items-center justify-between text-sm mb-1">
+                                <span class="text-gray-600">前道产线1</span>
+                                <span class="text-green-600 font-medium">85%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-sm mb-1">
+                                <span class="text-gray-600">前道产线2</span>
+                                <span class="text-yellow-600 font-medium">92%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-sm mb-1">
+                                <span class="text-gray-600">后道产线1</span>
+                                <span class="text-green-600 font-medium">78%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 78%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="bg-white border border-gray-200 text-gray-700 py-3 rounded-2xl font-medium text-sm shadow-sm hover:shadow-md transition-shadow flex items-center justify-center">
+                        <i class="fas fa-edit mr-2"></i>
+                        手动调整
+                    </button>
+                    <button class="bg-purple-600 text-white py-3 rounded-2xl font-medium text-sm shadow-lg hover:shadow-lg transition-shadow flex items-center justify-center">
+                        <i class="fas fa-check mr-2"></i>
+                        确认排产
+                    </button>
+                </div>
+            </div>
+
+            <!-- 底部导航栏 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+                <div class="grid grid-cols-4 py-2">
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-home text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">首页</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-list-alt text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">订单</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-chart-gantt text-purple-600 text-xl mb-1"></i>
+                        <span class="text-xs text-purple-600">甘特图</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-user text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">我的</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

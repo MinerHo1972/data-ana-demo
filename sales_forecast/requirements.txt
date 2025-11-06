@@ -1,0 +1,26 @@
+# 核心数据科学库
+pandas>=1.5.0
+numpy>=1.21.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# 时间序列分析
+statsmodels>=0.13.0
+scikit-learn>=1.1.0
+
+# 机器学习
+xgboost>=1.6.0
+
+# 商业预测（可选）
+prophet>=1.1.0
+
+# 数据可视化
+plotly>=5.0.0
+
+# 进度条
+tqdm>=4.64.0
+
+# 工具库
+warnings
+datetime
+pathlib

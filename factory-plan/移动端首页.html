@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生产排产计划系统 - 移动端首页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        .phone-frame {
+            width: 375px;
+            height: 640px;
+            border: 12px solid #000;
+            border-radius: 36px;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            position: relative;
+            z-index: 10;
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="status-bar">
+            <span>9:41</span>
+            <div class="flex gap-1">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
+        </div>
+
+        <div class="h-full bg-gray-50 relative">
+            <!-- 顶部用户信息 -->
+            <div class="bg-gradient-to-br from-purple-600 to-blue-600 px-4 py-6 text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face&auto=format"
+                             class="w-12 h-12 rounded-full border-2 border-white/30 mr-3">
+                        <div>
+                            <p class="text-lg font-semibold">张生产</p>
+                            <p class="text-sm opacity-90">生产计划员</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="relative">
+                            <i class="fas fa-bell text-white text-xl"></i>
+                            <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-400 rounded-full"></span>
+                        </button>
+                        <button>
+                            <i class="fas fa-cog text-white text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 今日状态卡片 -->
+                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm opacity-90">今日生产状态</span>
+                        <span class="text-xs bg-white/30 px-2 py-1 rounded-full">实时更新</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold">12</p>
+                            <p class="text-xs opacity-80">进行中</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold">3</p>
+                            <p class="text-xs opacity-80">待处理</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold">85%</p>
+                            <p class="text-xs opacity-80">利用率</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主要内容区域 -->
+            <div class="px-4 py-4 overflow-y-auto" style="height: calc(100% - 200px - 60px);">
+                <!-- 紧急提醒 -->
+                <div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-4">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-sm font-semibold text-red-800 mb-1">紧急处理事项</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between bg-white rounded-lg p-2">
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                                        <span class="text-sm text-gray-800">A001订单物料不足</span>
+                                    </div>
+                                    <span class="text-xs text-red-600">2小时前</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-white rounded-lg p-2">
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                                        <span class="text-sm text-gray-800">产线2维护提醒</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500">1天前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快速操作 -->
+                <div class="mb-4">
+                    <h3 class="text-base font-semibold text-gray-800 mb-3">快速操作</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-3 mx-auto">
+                                <i class="fas fa-plus-circle text-purple-600 text-lg"></i>
+                            </div>
+                            <p class="text-sm font-medium text-gray-800">新建订单</p>
+                            <p class="text-xs text-gray-500">创建生产订单</p>
+                        </button>
+
+                        <button class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-3 mx-auto">
+                                <i class="fas fa-magic text-blue-600 text-lg"></i>
+                            </div>
+                            <p class="text-sm font-medium text-gray-800">智能排产</p>
+                            <p class="text-xs text-gray-500">一键自动排产</p>
+                        </button>
+
+                        <button class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-3 mx-auto">
+                                <i class="fas fa-eye text-green-600 text-lg"></i>
+                            </div>
+                            <p class="text-sm font-medium text-gray-800">查看排产</p>
+                            <p class="text-xs text-gray-500">甘特图展示</p>
+                        </button>
+
+                        <button class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mb-3 mx-auto">
+                                <i class="fas fa-boxes text-orange-600 text-lg"></i>
+                            </div>
+                            <p class="text-sm font-medium text-gray-800">库存管理</p>
+                            <p class="text-xs text-gray-500">物料库存监控</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 今日重点任务 -->
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-semibold text-gray-800">今日重点任务</h3>
+                        <a href="#" class="text-sm text-purple-600">查看全部</a>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="bg-white rounded-xl p-3 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                                    <span class="text-sm font-medium text-gray-800">A001产品紧急排产</span>
+                                </div>
+                                <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">紧急</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2">客户需求，优先安排生产</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">前道产线1</span>
+                                <span class="text-xs text-gray-400">下午2点前完成</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-3 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                                    <span class="text-sm font-medium text-gray-800">B002订单物料确认</span>
+                                </div>
+                                <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">进行中</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2">确认维生素C粉末库存</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">采购部协作</span>
+                                <span class="text-xs text-gray-400">今日内完成</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 产线状态 -->
+                <div>
+                    <h3 class="text-base font-semibold text-gray-800 mb-3">产线状态</h3>
+                    <div class="bg-white rounded-2xl p-4 shadow-sm">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center">
+                                <div class="relative inline-flex items-center justify-center mb-2">
+                                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-play text-green-600"></i>
+                                    </div>
+                                    <div class="absolute -bottom-0 -right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+                                </div>
+                                <p class="text-sm font-medium text-gray-800">前道产线1</p>
+                                <p class="text-xs text-green-600">正常运行</p>
+                                <p class="text-xs text-gray-500 mt-1">利用率: 85%</p>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="relative inline-flex items-center justify-center mb-2">
+                                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-pause text-yellow-600"></i>
+                                    </div>
+                                    <div class="absolute -bottom-0 -right-0 w-3 h-3 bg-yellow-500 border-2 border-white rounded-full"></div>
+                                </div>
+                                <p class="text-sm font-medium text-gray-800">后道产线1</p>
+                                <p class="text-xs text-yellow-600">待机中</p>
+                                <p class="text-xs text-gray-500 mt-1">利用率: 45%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部导航栏 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+                <div class="grid grid-cols-4 py-2">
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-home text-purple-600 text-xl mb-1"></i>
+                        <span class="text-xs text-purple-600">首页</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-list-alt text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">订单</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-chart-bar text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">报表</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-user text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">我的</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生产排产计划系统 - UI设计展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f6f6f6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .page-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .page-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        .page-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .page-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 680px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f6f6f6;
+            border: 1px solid #e0e0e0;
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #f6f6f6;
+        }
+        .stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .stats h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="header">
+            <h1>生产排产计划系统 UI设计展示</h1>
+            <p>智能化工厂生产计划管理解决方案 - 移动端界面设计</p>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="stats">
+            <h2>设计概览</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">页面总数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">用户角色</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">响应式设计</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1024x640</div>
+                    <div class="stat-label">设计尺寸</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面展示网格 -->
+        <div class="grid-container">
+            <!-- 登录页面 -->
+            <div class="page-item">
+                <h3 class="page-title">登录页面</h3>
+                <p class="page-description">用户身份验证和角色选择界面，支持生产计划员和采购人员两种角色登录</p>
+                <div class="iframe-container">
+                    <iframe src="登录页面.html" title="登录页面"></iframe>
+                </div>
+            </div>
+
+            <!-- 主页仪表板 -->
+            <div class="page-item">
+                <h3 class="page-title">主页仪表板</h3>
+                <p class="page-description">系统概览和快速访问入口，展示今日生产状态、待处理任务和产线利用率</p>
+                <div class="iframe-container">
+                    <iframe src="主页仪表板.html" title="主页仪表板"></iframe>
+                </div>
+            </div>
+
+            <!-- 智能排产页面 -->
+            <div class="page-item">
+                <h3 class="page-title">智能排产页面</h3>
+                <p class="page-description">排产参数设置和执行界面，支持一键智能排产和实时进度监控</p>
+                <div class="iframe-container">
+                    <iframe src="智能排产页面.html" title="智能排产页面"></iframe>
+                </div>
+            </div>
+
+            <!-- 甘特图展示页面 -->
+            <div class="page-item">
+                <h3 class="page-title">甘特图展示页面</h3>
+                <p class="page-description">可视化展示排产计划，支持时间轴查看和异常订单高亮显示</p>
+                <div class="iframe-container">
+                    <iframe src="甘特图展示页面.html" title="甘特图展示页面"></iframe>
+                </div>
+            </div>
+
+            <!-- 生产订单管理页面 -->
+            <div class="page-item">
+                <h3 class="page-title">生产订单管理页面</h3>
+                <p class="page-description">订单列表展示和管理，支持订单状态筛选和详情查看</p>
+                <div class="iframe-container">
+                    <iframe src="生产订单管理页面.html" title="生产订单管理页面"></iframe>
+                </div>
+            </div>
+
+            <!-- 库存管理页面 -->
+            <div class="page-item">
+                <h3 class="page-title">库存管理页面</h3>
+                <p class="page-description">库存监控和预警界面，实时展示物料库存状态和变动趋势</p>
+                <div class="iframe-container">
+                    <iframe src="库存管理页面.html" title="库存管理页面"></iframe>
+                </div>
+            </div>
+
+            <!-- 采购建议页面 -->
+            <div class="page-item">
+                <h3 class="page-title">采购建议页面</h3>
+                <p class="page-description">智能采购建议和调拨方案，帮助优化采购决策和成本控制</p>
+                <div class="iframe-container">
+                    <iframe src="采购建议页面.html" title="采购建议页面"></iframe>
+                </div>
+            </div>
+
+            <!-- 移动端首页 -->
+            <div class="page-item">
+                <h3 class="page-title">移动端首页</h3>
+                <p class="page-description">专为移动端优化的首页界面，提供快速访问和核心功能展示</p>
+                <div class="iframe-container">
+                    <iframe src="移动端首页.html" title="移动端首页"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设计说明 -->
+        <div class="page-item">
+            <h3 class="page-title">设计说明</h3>
+            <div style="text-align: left; line-height: 1.6; color: #666;">
+                <p><strong>设计风格：</strong>优雅的清新主义美学与功能的完美平衡，采用清新柔和的渐变配色方案</p>
+                <br>
+                <p><strong>技术规格：</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>设计尺寸：1024x640PX（手机mockup样式）</li>
+                    <li>样式框架：Tailwind CSS CDN</li>
+                    <li>图标库：Font Awesome 6.4.0</li>
+                    <li>图片资源：Unsplash开源图片</li>
+                </ul>
+                <br>
+                <p><strong>特色功能：</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>响应式设计，完美适配移动端</li>
+                    <li>智能排产算法和甘特图可视化</li>
+                    <li>实时库存监控和预警系统</li>
+                    <li>多角色权限管理（生产计划员/采购人员）</li>
+                    <li>数据驱动的采购建议和成本优化</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

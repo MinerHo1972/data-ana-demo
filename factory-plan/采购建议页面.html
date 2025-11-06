@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生产排产计划系统 - 采购建议</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        .phone-frame {
+            width: 375px;
+            height: 640px;
+            border: 12px solid #000;
+            border-radius: 36px;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            position: relative;
+            z-index: 10;
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="status-bar">
+            <span>9:41</span>
+            <div class="flex gap-1">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
+        </div>
+
+        <div class="h-full bg-gray-50 relative">
+            <!-- 顶部导航 -->
+            <div class="bg-white shadow-sm px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center">
+                    <button class="mr-3">
+                        <i class="fas fa-arrow-left text-gray-600 text-xl"></i>
+                    </button>
+                    <h1 class="text-lg font-semibold text-gray-800">采购建议</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button>
+                        <i class="fas fa-download text-gray-600 text-xl"></i>
+                    </button>
+                    <button>
+                        <i class="fas fa-share text-gray-600 text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 统计概览 -->
+            <div class="bg-white px-4 py-3 border-b border-gray-200">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="text-center">
+                        <p class="text-xl font-bold text-orange-600">8</p>
+                        <p class="text-xs text-gray-500">紧急采购</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xl font-bold text-blue-600">15</p>
+                        <p class="text-xs text-gray-500">计划采购</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xl font-bold text-green-600">¥125.6K</p>
+                        <p class="text-xs text-gray-500">预计金额</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主要内容区域 -->
+            <div class="px-4 py-4 overflow-y-auto" style="height: calc(100% - 44px - 60px - 60px);">
+                <!-- 紧急采购建议 -->
+                <div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-semibold text-red-800">紧急采购建议</h3>
+                        <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">需今日处理</span>
+                    </div>
+                    <p class="text-sm text-red-700 mb-3">以下物料库存即将耗尽，建议立即采购</p>
+
+                    <div class="space-y-2">
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-flask text-red-600 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">维生素C粉末</p>
+                                        <p class="text-xs text-gray-500">当前库存: 125kg</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-bold text-red-600">紧急</p>
+                                    <p class="text-xs text-gray-500">安全库存: 200kg</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-600">建议采购: 300kg</span>
+                                <span class="text-orange-600 font-medium">预计 ¥15,000</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                                <span class="text-xs text-gray-500">建议供应商: 健康原料公司</span>
+                                <span class="text-xs text-red-600">要求送达: 3月17日</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-box text-red-600 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">塑料瓶500ml</p>
+                                        <p class="text-xs text-gray-500">当前库存: 850个</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-bold text-red-600">紧急</p>
+                                    <p class="text-xs text-gray-500">安全库存: 1000个</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-600">建议采购: 2000个</span>
+                                <span class="text-orange-600 font-medium">预计 ¥8,000</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                                <span class="text-xs text-gray-500">建议供应商: 包装材料厂</span>
+                                <span class="text-xs text-red-600">要求送达: 3月18日</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 计划采购建议 -->
+                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-semibold text-blue-800">计划采购建议</h3>
+                        <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">本周内处理</span>
+                    </div>
+                    <p class="text-sm text-blue-700 mb-3">根据未来7天生产计划计算的物料需求</p>
+
+                    <div class="space-y-2">
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-flask text-blue-600 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">乳清蛋白粉</p>
+                                        <p class="text-xs text-gray-500">当前库存: 1,250kg</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-bold text-blue-600">计划</p>
+                                    <p class="text-xs text-gray-500">预计可用: 5天</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-600">建议采购: 500kg</span>
+                                <span class="text-green-600 font-medium">预计 ¥25,000</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                                <span class="text-xs text-gray-500">建议供应商: 营养原料公司</span>
+                                <span class="text-xs text-blue-600">要求送达: 3月22日</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-cube text-green-600 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">包装纸盒</p>
+                                        <p class="text-xs text-gray-500">当前库存: 12,000个</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-bold text-blue-600">计划</p>
+                                    <p class="text-xs text-gray-500">预计可用: 8天</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-600">建议采购: 5000个</span>
+                                <span class="text-green-600 font-medium">预计 ¥10,000</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                                <span class="text-xs text-gray-500">建议供应商: 包装制品公司</span>
+                                <span class="text-xs text-blue-600">要求送达: 3月25日</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 调拨建议 -->
+                <div class="bg-green-50 border border-green-200 rounded-2xl p-4 mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-semibold text-green-800">调拨建议</h3>
+                        <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">成本优化</span>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-exchange-alt text-green-600 text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">维生素B片</p>
+                                    <p class="text-xs text-gray-500">工厂A → 工厂B</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-green-600">推荐</p>
+                                <p class="text-xs text-gray-500">节省成本</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-gray-600">调拨数量: 200kg</span>
+                            <span class="text-green-600 font-medium">节省 ¥3,500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 供应商评估 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm">
+                    <h3 class="text-base font-semibold text-gray-800 mb-3">推荐供应商</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between bg-gray-50 rounded-xl p-3">
+                            <div class="flex items-center">
+                                <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=40&h=40&fit=crop&auto=format"
+                                     class="w-10 h-10 rounded-lg mr-3">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">健康原料公司</p>
+                                    <p class="text-xs text-gray-500">合作2年 | 98%准时率</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400 text-xs mr-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-xs text-gray-600">4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <button class="bg-white border border-gray-200 text-gray-700 py-3 rounded-2xl font-medium text-sm shadow-sm hover:shadow-md transition-shadow flex items-center justify-center">
+                        <i class="fas fa-edit mr-2"></i>
+                        调整建议
+                    </button>
+                    <button class="bg-green-600 text-white py-3 rounded-2xl font-medium text-sm shadow-lg hover:shadow-lg transition-shadow flex items-center justify-center">
+                        <i class="fas fa-check mr-2"></i>
+                        生成采购单
+                    </button>
+                </div>
+            </div>
+
+            <!-- 底部导航栏 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+                <div class="grid grid-cols-4 py-2">
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-home text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">首页</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-shopping-cart text-purple-600 text-xl mb-1"></i>
+                        <span class="text-xs text-purple-600">采购</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-chart-bar text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">报表</span>
+                    </button>
+                    <button class="flex flex-col items-center py-2">
+                        <i class="fas fa-user text-gray-400 text-xl mb-1"></i>
+                        <span class="text-xs text-gray-400">我的</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

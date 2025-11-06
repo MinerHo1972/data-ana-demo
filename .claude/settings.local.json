@@ -24,7 +24,17 @@
       "Bash(git push:*)",
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" repo sync:*)",
       "Bash(git fetch:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(python3:*)",
+      "Bash(D:\\a\\python.exe:*)",
+      "Bash(\"D:/a/python.exe\" --version)",
+      "Bash(\"D:/a/python.exe\" -m pip install:*)",
+      "Bash(\"D:/a/python.exe\" complete_forecast_analysis.py)",
+      "Bash(\"D:/a/python.exe\" -c \"import tkinter; print(''tkinter available'')\")",
+      "Bash(\"D:/a/python.exe\" -m pip install matplotlib seaborn)",
+      "Bash(\"D:/a/python.exe\":*)",
+      "Bash(\"D:/a/python.exe\" 启动预测系统.py)",
+      "Bash(\"D:/a/python.exe\" -c \"import forecast_ui; print(''语法检查通过'')\")"
     ],
     "deny": [],
     "ask": []

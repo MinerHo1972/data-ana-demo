@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生产排产计划系统 - 登录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        .phone-frame {
+            width: 375px;
+            height: 640px;
+            border: 12px solid #000;
+            border-radius: 36px;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .status-bar {
+            height: 44px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="status-bar">
+            <span>9:41</span>
+            <div class="flex gap-1">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
+        </div>
+
+        <div class="h-full bg-gradient-to-br from-purple-50 via-white to-blue-50 relative overflow-hidden">
+            <!-- 背景装饰 -->
+            <div class="absolute top-20 left-10 w-32 h-32 bg-purple-200 rounded-full opacity-30 blur-xl"></div>
+            <div class="absolute bottom-20 right-10 w-40 h-40 bg-blue-200 rounded-full opacity-30 blur-xl"></div>
+
+            <!-- 主要内容 -->
+            <div class="relative z-10 px-8 pt-16">
+                <!-- Logo区域 -->
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-industry text-white text-3xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800 mb-2">生产排产系统</h1>
+                    <p class="text-gray-600 text-sm">智能化工厂生产计划管理</p>
+                </div>
+
+                <!-- 登录表单 -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/50">
+                    <div class="mb-6">
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" placeholder="请输入用户名"
+                                class="w-full pl-12 pr-4 py-4 bg-gray-50/50 rounded-2xl border border-gray-200 focus:border-purple-400 focus:outline-none focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" placeholder="请输入密码"
+                                class="w-full pl-12 pr-4 py-4 bg-gray-50/50 rounded-2xl border border-gray-200 focus:border-purple-400 focus:outline-none focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-6">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500">
+                            <span class="ml-2 text-sm text-gray-600">记住登录</span>
+                        </label>
+                        <a href="#" class="text-sm text-purple-600 hover:text-purple-700">忘记密码？</a>
+                    </div>
+
+                    <button class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                        登录系统
+                    </button>
+
+                    <!-- 角色选择 -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <p class="text-center text-sm text-gray-600 mb-3">选择登录角色</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="py-3 px-4 bg-purple-100 text-purple-700 rounded-xl text-sm font-medium hover:bg-purple-200 transition-colors">
+                                <i class="fas fa-user-tie mr-2"></i>生产计划员
+                            </button>
+                            <button class="py-3 px-4 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium hover:bg-blue-200 transition-colors">
+                                <i class="fas fa-shopping-cart mr-2"></i>采购人员
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 版本信息 -->
+                <div class="text-center mt-8 text-gray-500 text-xs">
+                    <p>版本 v1.0.0</p>
+                    <p class="mt-1">© 2024 智能制造科技有限公司</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
