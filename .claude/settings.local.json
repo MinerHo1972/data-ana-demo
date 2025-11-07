@@ -34,7 +34,13 @@
       "Bash(\"D:/a/python.exe\" -m pip install matplotlib seaborn)",
       "Bash(\"D:/a/python.exe\":*)",
       "Bash(\"D:/a/python.exe\" 启动预测系统.py)",
-      "Bash(\"D:/a/python.exe\" -c \"import forecast_ui; print(''语法检查通过'')\")"
+      "Bash(\"D:/a/python.exe\" -c \"import forecast_ui; print(''语法检查通过'')\")",
+      "Bash(\"D:/a/python.exe\" -c \"import sys; print(f''Python版本: {sys.version}''); print(f''Python路径: {sys.executable}'')\")",
+      "Bash(\"D:/a/python.exe\" -m pip install pyinstaller)",
+      "Bash(\"D:/a/python.exe\" -m PyInstaller:*)",
+      "Bash(dir:*)",
+      "Bash(启动预测系统.bat:*)",
+      "WebFetch(domain:std2dqco4j.feishu.cn)"
     ],
     "deny": [],
     "ask": []

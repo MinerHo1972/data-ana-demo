@@ -1,0 +1,82 @@
+// injectData 是系统注入的数据，脚本需要用到的数据都在这里可以获取
+const dataMeta = injectData.dataMeta;
+// dataMeta 是一个预处理的数据结构，其包含了转化后的分类汇总数据，方便图表渲染
+const { seriesDataMap } = dataMeta;
+// 利用 seriesDataMap 组装图表的 series 数组
+const series = Array.from(seriesDataMap.values()).map((v) => {
+  const { data, seriesName } = v;
+
+  const base = {
+    type: 'line',
+    stack: 'total',
+    barMaxWidth: 30,
+    label: {
+      show: true,
+      position: 'inside',
+      formatter: '{c}',
+    },
+  };
+  Object.assign(base, {
+    name: seriesName,
+    data: data.map((item, index) => {
+      return {
+        value: item,
+        itemStyle: {},
+      };
+    }),
+    smooth: true,
+    areaStyle: {
+      opacity: 0.6,
+    },
+    lineStyle: {
+      width: 2,
+    },
+  });
+  return base;
+});
+// 标准的 echarts 配置
+return {
+  legend: {
+    type: 'scroll',
+    show: true,
+    data: Array.from(dataMeta.seriesDataMap.values()).map((v) => v.seriesName),
+    bottom: 0,
+    itemWidth: 14,
+    icon: 'circle',
+    selectorLabel: {
+      show: true,
+      fontSize: 10,
+    },
+  },
+  xAxis: {
+    type: 'category',
+    // 横轴的值列表
+    data: dataMeta.dimensionFieldDistincts,
+    axisTick: {
+      alignWithLabel: true,
+      show: true,
+    },
+    axisLabel: {
+      show: true,
+      hideOverlap: true,
+      interval: 'auto',
+      rotate: 0,
+    },
+  },
+  yAxis: {
+    type: 'value',
+    axisLabel: {
+      show: true,
+    },
+    show: true,
+  },
+  series: series,
+  theme: 'light',
+  tooltip: {
+    axisPointer: {
+      type: 'cross',
+      snap: true,
+    },
+  },
+  animation: false,
+};

@@ -1,27 +1,29 @@
 @echo off
-chcp 65001 >nul
 title 4G销售数据预测系统
-
-echo ==========================================
-echo        4G销售数据预测系统
-echo ==========================================
+echo.
+echo ========================================
+echo    4G销售数据预测系统 v2.1.0
+echo ========================================
+echo.
+echo 正在启动预测系统，请稍候...
+echo 首次启动可能需要较长时间，请耐心等待...
 echo.
 
-echo 正在启动预测系统...
-echo.
-
-REM 切换到脚本所在目录
 cd /d "%~dp0"
 
-REM 运行UI系统
-python run_forecast_ui.py
-
-if errorlevel 1 (
+if exist "dist\4G销售数据预测系统.exe" (
+    echo 找到可执行文件，正在启动...
     echo.
-    echo 启动失败！请检查：
-    echo 1. Python是否正确安装
-    echo 2. 依赖包是否安装完成
-    echo 3. 运行: pip install pandas numpy matplotlib seaborn openpyxl
+    start "" "dist\4G销售数据预测系统.exe"
+    echo 程序已启动！
+) else (
+    echo 错误：未找到可执行文件！
+    echo 请确保文件 4G销售数据预测系统.exe 存在于 dist 目录中
     echo.
     pause
 )
+
+echo.
+echo 如需技术支持，请查看 打包说明.md 文件
+echo.
+pause
